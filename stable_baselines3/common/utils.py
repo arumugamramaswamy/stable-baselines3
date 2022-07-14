@@ -21,6 +21,7 @@ except ImportError:
 from stable_baselines3.common.logger import Logger, configure
 from stable_baselines3.common.type_aliases import GymEnv, Schedule, TensorDict, TrainFreq, TrainFrequencyUnit
 
+warned = False
 
 def set_random_seed(seed: int, using_cuda: bool = False) -> None:
     """
@@ -242,11 +243,15 @@ def is_vectorized_box_observation(observation: np.ndarray, observation_space: gy
     elif observation.shape[1:] == observation_space.shape:
         return True
     else:
-        raise ValueError(
-            f"Error: Unexpected observation shape {observation.shape} for "
-            + f"Box environment, please use {observation_space.shape} "
-            + "or (n_env, {}) for the observation shape.".format(", ".join(map(str, observation_space.shape)))
-        )
+        global warned
+        if not warned:
+            warned = True
+            print(
+                f"Warning: Unexpected observation shape {observation.shape} for "
+                + f"Box environment, please use {observation_space.shape} "
+                + "or (n_env, {}) for the observation shape.".format(", ".join(map(str, observation_space.shape)))
+            )
+        return True
 
 
 def is_vectorized_discrete_observation(observation: Union[int, np.ndarray], observation_space: gym.spaces.Discrete) -> bool:
