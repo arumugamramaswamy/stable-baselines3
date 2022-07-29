@@ -267,9 +267,10 @@ class PPO(OnPolicyAlgorithm):
 
                 # Optimization step
                 self.policy.optimizer.zero_grad()
-                loss.backward()
-                # Clip grad norm
-                th.nn.utils.clip_grad_norm_(self.policy.parameters(), self.max_grad_norm)
+                if loss.requires_grad:
+                    loss.backward()
+                    # Clip grad norm
+                    th.nn.utils.clip_grad_norm_(self.policy.parameters(), self.max_grad_norm)
                 self.policy.optimizer.step()
 
             if not continue_training:
