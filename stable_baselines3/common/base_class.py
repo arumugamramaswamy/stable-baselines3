@@ -726,6 +726,7 @@ class BaseAlgorithm(ABC):
             check_for_correct_spaces(env, data["observation_space"], data["action_space"])
             # making sure that training can be carried out with a different environment
             data["observation_space"] = env.observation_space
+            data["n_envs"] = env.num_envs
             # Discard `_last_obs`, this will force the env to reset before training
             # See issue https://github.com/DLR-RM/stable-baselines3/issues/597
             if force_reset and data is not None:
